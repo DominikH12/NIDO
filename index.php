@@ -5,21 +5,21 @@ include('db.php'); // Verbindung zur Datenbank herstellen
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['username'] = $_POST['name1'];
     $_SESSION['produkt'] = $_POST['produkt'];
-    $_SESSION['produktqualität'] = $_POST['produkt_bewertung'];
+    $_SESSION['produktqualitaet'] = $_POST['produkt_bewertung'];
     $_SESSION['service'] = $_POST['service_bewertung'];
     $_SESSION['lieferung'] = $_POST['lieferung_bewertung'];
     $_SESSION['sonstige_anmerkungen'] = $_POST['sonstige_anmerkungen'];
 
     try {
         // SQL-Anweisung vorbereiten
-        $stmt = $conn->prepare("INSERT INTO nido (username, produkt, produktqualität, service, lieferung, sonstige_anmerkungen) 
-        VALUES (:username, :produkt, :produktqualität, :service, :lieferung, :sonstige_anmerkungen)");
+        $stmt = $conn->prepare("INSERT INTO nido (username, produkt, produktqualitaet, lieferung, sonstige_anmerkungen) 
+        VALUES (:username, :produkt, :produktqualitaet, :lieferung, :sonstige_anmerkungen)");
 
         // Parameter binden
         $stmt->bindParam(':username', $_SESSION['username']);
         $stmt->bindParam(':produkt', $_SESSION['produkt']);
-        $stmt->bindParam(':produktqualität', $_SESSION['produktqualität']);
-        $stmt->bindParam(':service', $_SESSION['service']);
+        $stmt->bindParam(':produktqualität', $_SESSION['produktqualitaet']);
+     //   $stmt->bindParam(':service', $_SESSION['service']);
         $stmt->bindParam(':lieferung', $_SESSION['lieferung']);
         $stmt->bindParam(':sonstige_anmerkungen', $_SESSION['sonstige_anmerkungen']);
 
