@@ -3,31 +3,29 @@ session_start();
 include('db.php'); // Verbindung zur Datenbank herstellen
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['username'] = $_POST['name1'];
-    $_SESSION['produkt'] = $_POST['produkt'];
-    $_SESSION['produktqualitaet'] = $_POST['produkt_bewertung'];
-    $_SESSION['service'] = $_POST['service_bewertung'];
-    $_SESSION['lieferung'] = $_POST['lieferung_bewertung'];
-    $_SESSION['sonstige_anmerkungen'] = $_POST['sonstige_anmerkungen'];
+    $username = $_SESSION['username'] ?? $_POST['name1'];
+
+    $produkt = $_POST['produkt'];
+    $produktqualitaet = $_POST['produkt_bewertung']; // geändert
+    $service = $_POST['service_bewertung'];
+    $lieferung = $_POST['lieferung_bewertung'];
+    $sonstige_anmerkungen = $_POST['sonstige_anmerkungen']; // bleibt gleich
 
     try {
-        // SQL-Anweisung vorbereiten
-        $stmt = $conn->prepare("INSERT INTO nido (username, produkt, produktqualitaet, lieferung, sonstige_anmerkungen) 
-        VALUES (:username, :produkt, :produktqualitaet, :lieferung, :sonstige_anmerkungen)");
+        $stmt = $conn->prepare("INSERT INTO nido (username, produkt, produktqualitaet, service, lieferung, sonstige_anmerkungen) 
+        VALUES (:username, :produkt, :produktqualitaet, :service, :lieferung, :sonstige_anmerkungen)");
 
-        // Parameter binden
-        $stmt->bindParam(':username', $_SESSION['username']);
-        $stmt->bindParam(':produkt', $_SESSION['produkt']);
-        $stmt->bindParam(':produktqualität', $_SESSION['produktqualitaet']);
-     //   $stmt->bindParam(':service', $_SESSION['service']);
-        $stmt->bindParam(':lieferung', $_SESSION['lieferung']);
-        $stmt->bindParam(':sonstige_anmerkungen', $_SESSION['sonstige_anmerkungen']);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':produkt', $produkt);
+        $stmt->bindParam(':produktqualitaet', $produktqualitaet); // geändert
+        $stmt->bindParam(':service', $service);
+        $stmt->bindParam(':lieferung', $lieferung);
+        $stmt->bindParam(':sonstige_anmerkungen', $sonstige_anmerkungen);
 
-        // SQL ausführen
         $stmt->execute();
-        $_SESSION['message'] = "Daten erfolgreich gespeichert!";
+        $message = "Daten erfolgreich gespeichert!";
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Fehler: " . $e->getMessage();
+        $message = "Fehler: " . $e->getMessage();
     }
 }
 ?>
@@ -37,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formular</title>
+    <title>Produktbewertung</title>
     <style>
         body {
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
-            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ffe6e6, #ffe0f7);
+            font-family: 'Segoe UI', sans-serif;
             text-align: center;
             padding: 20px;
             display: flex;
@@ -58,19 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         form {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 300px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+            width: 320px;
         }
 
         label {
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 5px;
             color: #d63384;
+            display: block;
+            text-align: left;
         }
 
         input, select, textarea {
@@ -79,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: 1px solid #d63384;
             width: 100%;
             box-sizing: border-box;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         textarea {
@@ -87,15 +84,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             height: 80px;
         }
 
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 22px;
+            cursor: pointer;
+            color: gray;
+        }
+
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: gold;
+        }
+
         button {
-            margin-top: 10px;
             padding: 10px 15px;
             border: none;
             background-color: #d63384;
             color: white;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -111,41 +132,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 
-    <h2>Persönliche Daten</h2>
+    <h2>Produktbewertung</h2>
 
-    <?php 
-    if (!empty($_SESSION['message'])) {
-        echo "<p class='message'>" . $_SESSION['message'] . "</p>";
-        unset($_SESSION['message']); // Löscht die Nachricht nach dem Anzeigen
-    }
-    ?>
+    <?php if (!empty($message)) echo "<p class='message'>$message</p>"; ?>
 
     <form action="index.php" method="POST">
-        <label for="name1">Username:</label>
-        <input type="text" id="name1" name="name1" value="<?= $_SESSION['username'] ?? '' ?>" required>
+        <?php if (!isset($_SESSION['username'])): ?>
+            <label for="name1">Username:</label>
+            <input type="text" id="name1" name="name1" required>
+        <?php endif; ?>
 
         <label for="produkt">Wähle ein Produkt:</label>
         <select id="produkt" name="produkt" required>
-            <option value="" disabled <?= !isset($_SESSION['produkt']) ? 'selected' : '' ?>>Bitte wählen...</option>
-            <option value="fanta_strawberry_kiwi" <?= ($_SESSION['produkt'] ?? '') == 'fanta_strawberry_kiwi' ? 'selected' : '' ?>>Fanta Strawberry & Kiwi</option>
-            <option value="haribo_goldbaeren" <?= ($_SESSION['produkt'] ?? '') == 'haribo_goldbaeren' ? 'selected' : '' ?>>Haribo Goldbären</option>
-            <option value="jana_eistee" <?= ($_SESSION['produkt'] ?? '') == 'jana_eistee' ? 'selected' : '' ?>>Jana Eistee</option>
-            <option value="reeses_minis" <?= ($_SESSION['produkt'] ?? '') == 'reeses_minis' ? 'selected' : '' ?>>Reese's Minis</option>
-            <option value="haribo_saure_tuete" <?= ($_SESSION['produkt'] ?? '') == 'haribo_saure_tuete' ? 'selected' : '' ?>>Haribo Saure Tüte</option>
-            <option value="warheads_extreme_sour" <?= ($_SESSION['produkt'] ?? '') == 'warheads_extreme_sour' ? 'selected' : '' ?>>Warheads Extreme Sour</option>
+            <option value="" disabled selected>Bitte wählen...</option>
+            <option value="fanta_strawberry_kiwi">Fanta Strawberry & Kiwi</option>
+            <option value="haribo_goldbaeren">Haribo Goldbären</option>
+            <option value="jana_eistee">Jana Eistee</option>
+            <option value="reeses_minis">Reese's Minis</option>
+            <option value="haribo_saure_tuete">Haribo Saure Tüte</option>
+            <option value="warheads_extreme_sour">Warheads Extreme Sour</option>
         </select>
 
-        <label for="produkt_bewertung">Produktqualität:</label>
-        <input type="number" id="produkt_bewertung" name="produkt_bewertung" min="1" max="5" value="<?= $_SESSION['produktqualität'] ?? '' ?>" required>
+        <label>Produktqualität:</label>
+        <div class="rating">
+            <input type="radio" id="produkt5" name="produkt_bewertung" value="5"><label for="produkt5">★</label>
+            <input type="radio" id="produkt4" name="produkt_bewertung" value="4"><label for="produkt4">★</label>
+            <input type="radio" id="produkt3" name="produkt_bewertung" value="3"><label for="produkt3">★</label>
+            <input type="radio" id="produkt2" name="produkt_bewertung" value="2"><label for="produkt2">★</label>
+            <input type="radio" id="produkt1" name="produkt_bewertung" value="1"><label for="produkt1">★</label>
+        </div>
 
-        <label for="service_bewertung">Service:</label>
-        <input type="number" id="service_bewertung" name="service_bewertung" min="1" max="5" value="<?= $_SESSION['service'] ?? '' ?>" required>
+        <label>Service:</label>
+        <div class="rating">
+            <input type="radio" id="service5" name="service_bewertung" value="5"><label for="service5">★</label>
+            <input type="radio" id="service4" name="service_bewertung" value="4"><label for="service4">★</label>
+            <input type="radio" id="service3" name="service_bewertung" value="3"><label for="service3">★</label>
+            <input type="radio" id="service2" name="service_bewertung" value="2"><label for="service2">★</label>
+            <input type="radio" id="service1" name="service_bewertung" value="1"><label for="service1">★</label>
+        </div>
 
-        <label for="lieferung_bewertung">Lieferung:</label>
-        <input type="number" id="lieferung_bewertung" name="lieferung_bewertung" min="1" max="5" value="<?= $_SESSION['lieferung'] ?? '' ?>" required>
+        <label>Lieferung:</label>
+        <div class="rating">
+            <input type="radio" id="lieferung5" name="lieferung_bewertung" value="5"><label for="lieferung5">★</label>
+            <input type="radio" id="lieferung4" name="lieferung_bewertung" value="4"><label for="lieferung4">★</label>
+            <input type="radio" id="lieferung3" name="lieferung_bewertung" value="3"><label for="lieferung3">★</label>
+            <input type="radio" id="lieferung2" name="lieferung_bewertung" value="2"><label for="lieferung2">★</label>
+            <input type="radio" id="lieferung1" name="lieferung_bewertung" value="1"><label for="lieferung1">★</label>
+        </div>
 
         <label for="sonstige_anmerkungen">Sonstige Anmerkungen:</label>
-        <textarea id="sonstige_anmerkungen" name="sonstige_anmerkungen"><?= $_SESSION['sonstige_anmerkungen'] ?? '' ?></textarea>
+        <textarea id="sonstige_anmerkungen" name="sonstige_anmerkungen"></textarea>
 
         <button type="submit">Absenden</button>
     </form>
