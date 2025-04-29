@@ -7,21 +7,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
 
     try {
-        // Suche den Benutzer in der Datenbank
-        $stmt = $conn->prepare("SELECT * FROM nido WHERE username = :username");
+        // Suche den Benutzer in der korrekten Tabelle 'benutzer'
+        $stmt = $conn->prepare("SELECT * FROM benutzer WHERE username = :username");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Überprüfe, ob der Benutzer existiert und ob das Passwort korrekt ist
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['passwort'])) {
             $_SESSION['username'] = $username;
-            echo "Login erfolgreich! <a href='index.php'>Weiter zur Startseite</a>";
+            header("Location: index.php");  // Automatische Weiterleitung
+            exit;
         } else {
-            echo "Falscher Benutzername oder falsches Passwort!";
+            echo "<p style='color: red;'>Falscher Benutzername oder falsches Passwort!</p>";
         }
     } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
+        echo "<p style='color: red;'>Fehler: " . $e->getMessage() . "</p>";
     }
 }
 ?>
