@@ -2,24 +2,35 @@
 session_start();
 include('db.php');  // Verbindung zur Datenbank einbinden
 
+// Automatisches Einloggen über Cookie
+if (!isset($_SESSION['username']) && isset($_COOKIE['remember_me'])) {
+    $_SESSION['username'] = $_COOKIE['remember_me'];
+    header("Location: index.php");
+    exit;
+}
+
+// Wenn Formular gesendet wurde
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     try {
-        // Suche den Benutzer in der korrekten Tabelle 'benutzer'
+        // Benutzer aus Datenbank holen
         $stmt = $conn->prepare("SELECT * FROM benutzer WHERE username = :username");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Überprüfe, ob der Benutzer existiert und ob das Passwort korrekt ist
+        // Prüfen ob Benutzer gefunden und Passwort korrekt
         if ($user && password_verify($password, $user['passwort'])) {
             $_SESSION['username'] = $username;
 
-            setcookie("username", $username, time() + (86400 * 30), "/")
+            if (isset($_POST['remember'])) {
+                // Cookie für 30 Tage setzen
+                setcookie('remember_me', $username, time() + (86400 * 30), "/");
+            }
 
-            header("Location: index.php");  // Automatische Weiterleitung
+            header("Location: index.php");
             exit;
         } else {
             echo "<p style='color: red;'>Falscher Benutzername oder falsches Passwort!</p>";
@@ -47,6 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="password" name="password" id="password" required><br><br>
 
         <button type="submit">Einloggen</button>
+
+        <label>
+    <input type="checkbox" name="remember" value="1"> Eingeloggt bleiben
+        </label>
+
     </form> 
 
     <p>Du hast noch keinen Account? <a href="register.php">Registrierung</a></p>
