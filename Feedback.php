@@ -7,10 +7,22 @@ include('db.php'); // Verbindung zur Datenbank herstellen
 
 $username = $_SESSION["username"];
 $produkt = $_SESSION["produkt"];
-$pr = $_SESSION["produktqualität"];
+$pr = $_SESSION["produktqualitaet"];
 $service = $_SESSION["service"];
 $lieferung = $_SESSION["lieferung"];
 $sonstig = $_SESSION["sonstige_anmerkungen"];
+
+// RID aus der DB holen
+
+$pdo = new PDO("mysql:host=localhost;dbname=nido", "root", "");
+
+
+$username = $_SESSION['username']; // oder aus einem Formular oder Login
+$stmt = $pdo->prepare("SELECT uid FROM nido WHERE username = :username");
+$stmt->execute(['username' => $username]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$uid = $row['uid']; // Jetzt hast du die UID aus der DB
 
 
 
@@ -70,12 +82,17 @@ $sonstig = $_SESSION["sonstige_anmerkungen"];
 
 
     <div class="ausgabe-box">
-        <p><span class="label">Username:</span> <!-- PHP-Output --></p>
-        <p><span class="label">Produkt:</span> <!-- PHP-Output --></p>
-        <p><span class="label">Produktqualität:</span> <!-- PHP-Output --></p>
-        <p><span class="label">Service:</span> <!-- PHP-Output --></p>
-        <p><span class="label">Lieferung:</span> <!-- PHP-Output --></p>
-        <p><span class="label">Sonstige Anmerkungen:</span> <!-- PHP-Output --></p>
+
+    <p><strong style="color: deeppink;">UID:</strong> <?php echo htmlspecialchars($uid); ?></p>
+
+    <p><span class="label">UID:</span>  <?php echo $username ?></p>
+
+        <p><span class="label">Username:</span>  <?php echo $username ?></p>
+        <p><span class="label">Produkt: </span><?php echo $produkt ?></p>
+        <p><span class="label">Produktqualität:</span> <?php echo $pr ?></p>
+        <p><span class="label">Service:</span> <?php echo $service ?></p>
+        <p><span class="label">Lieferung:</span><?php echo $lieferung ?></p>
+        <p><span class="label">Sonstige Anmerkungen:</span> <?php echo $sonstig ?></p>
     </div>
 
 </body>
