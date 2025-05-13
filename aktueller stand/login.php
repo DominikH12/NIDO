@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (isset($_POST['remember'])) {
                 // Cookie für 30 Tage setzen
-                setcookie('remember_me', $username, time() + (86400 * 30), "/");
+                setcookie('remember_me', $username, time() + (60 * 10), "/");
             }
 
             header("Location: index.php");

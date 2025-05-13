@@ -196,7 +196,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <textarea id="sonstige_anmerkungen" name="sonstige_anmerkungen"></textarea>
 
         <button type="submit">Absenden</button>
-        <p><a href="Feedback.php">Weiter zu den Feedbacks</a></p>
+        <!-- <p><a href="Feedback.php">Weiter zu den Feedbacks</a></p> -->
+        
+        <p>Willst du die Admin-Seite sehen? </p>
+        <p>Logge dich hier als Admin ein</p>
+        <a href="login_a.php">Admin-login</a>
+
     </form>
 
     <div class="impressum">
