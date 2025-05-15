@@ -82,14 +82,6 @@ $result = $conn->query($sql);
     } else {
         echo "<p>Keine Feedbacks gefunden.</p>";
     }
-<<<<<<< HEAD
-    ?>
-<?php endif; ?>
-=======
-} else {
-    echo "<p>Keine Feedbacks gefunden.</p>";
-}
-
 
 ?>
 
@@ -102,7 +94,7 @@ $result = $conn->query($sql);
 
 
 
->>>>>>> nicom
+<?php endif; ?>
 
 </body>
 </html>

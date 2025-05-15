@@ -206,8 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <p style="margin-top: 80px;">
     <a href="Impressum.php" style="color: #d63384; text-decoration: none; font-weight: bold;">
+    
         ➤ Zum Impressum
     </a>
+    <a href="Feedback.php" style="color: #d63384; text-decoration: none; font-weight: bold;">
+    
+    ➤ Zum Feedback
+</a>
+
 </p>
 
 

@@ -26,12 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['username'] = $username;
 
             if (isset($_POST['remember'])) {
-<<<<<<< HEAD
                 // Cookie für 30 Tage setzen
                 setcookie('remember_me', $username, time() + (60 * 10), "/");
-=======
-                setcookie('remember_me', $username, time() + (86400 * 30), "/"); // 30 Tage
->>>>>>> nicom
             }
 
             header("Location: index.php");
