@@ -74,18 +74,12 @@ if ($result->rowCount() > 0) {
 
 ?>
 
-<div class="impressum">
-        <h2>Impressum</h2>
-        <p><strong>Medieninhaber und verantwortlich für den Inhalt:</strong><br>
-        Dominik Hartlieb<br>
-        Musterstraße 12<br>
-        1234 Musterstadt<br>
-        Österreich</p>
+<p style="margin-top: 60px; text-align: center;">
+    <a href="Impressum.php" style="color: #d63384; text-decoration: none; font-weight: bold; font-size: 16px;">
+        ➤ Zum Impressum
+    </a>
+</p>
 
-        <p><strong>Kontakt:</strong><br>
-        E-Mail: dominik@example.com<br>
-        Telefon: +43 123 456789</p>
-    </div>
 
 
 

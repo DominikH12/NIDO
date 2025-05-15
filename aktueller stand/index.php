@@ -199,18 +199,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p><a href="Feedback.php">Weiter zu den Feedbacks</a></p>
     </form>
 
-    <div class="impressum">
-        <h1>Impressum</h1>
-        <p><strong>Medieninhaber und verantwortlich für den Inhalt:</strong><br>
-        Dominik Hartlieb<br>
-        Musterstraße 12<br>
-        1234 Musterstadt<br>
-        Österreich</p>
+    <p style="margin-top: 80px;">
+    <a href="Impressum.php" style="color: #d63384; text-decoration: none; font-weight: bold;">
+        ➤ Zum Impressum
+    </a>
+</p>
 
-        <p><strong>Kontakt:</strong><br>
-        E-Mail: dominik@example.com<br>
-        Telefon: +43 123 456789</p>
-    </div>
 
 </body>
 </html>
