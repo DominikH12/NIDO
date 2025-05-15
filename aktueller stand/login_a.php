@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['username'] = $_SESSION["username"];
 
             if (isset($_POST['remember'])) {
-                // Cookie für 30 Tage setzen
+                // Cookie setzen
                 setcookie('remember_me', $_SESSION["username"], time() + (60 * 10), "/");
             }
 
