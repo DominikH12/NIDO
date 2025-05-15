@@ -82,8 +82,27 @@ $result = $conn->query($sql);
     } else {
         echo "<p>Keine Feedbacks gefunden.</p>";
     }
+<<<<<<< HEAD
     ?>
 <?php endif; ?>
+=======
+} else {
+    echo "<p>Keine Feedbacks gefunden.</p>";
+}
+
+
+?>
+
+<p style="margin-top: 60px; text-align: center;">
+    <a href="Impressum.php" style="color: #d63384; text-decoration: none; font-weight: bold; font-size: 16px;">
+        ➤ Zum Impressum
+    </a>
+</p>
+
+
+
+
+>>>>>>> nicom
 
 </body>
 </html>
