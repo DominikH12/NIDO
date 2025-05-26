@@ -53,17 +53,7 @@ $result = $conn->query($sql);
 </head>
 <body>
 
-<?php if (!isset($_SESSION['username'])): ?>
-    <h2>Bitte Passwort eingeben</h2>
-    <form action="index.php" method="POST">
-        <label for="passwort">Geben Sie ein Passwort ein:</label>
-        <input type="password" name="p1" id="p1" required>
-        <input type="submit" value="Einloggen">
-    </form>
-    <?php if (isset($error_message)): ?>
-        <p class="error"><?php echo $error_message; ?></p>
-    <?php endif; ?>
-<?php else: ?>
+
     <h1>Alle abgegebenen Feedbacks</h1>
 
     <?php
@@ -93,8 +83,6 @@ $result = $conn->query($sql);
 
 
 
-
-<?php endif; ?>
 
 </body>
 </html>
